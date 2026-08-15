@@ -2,13 +2,18 @@
 (function () {
   "use strict";
 
-  /* ── Intro: reveal the site after the growing-seedling animation ── */
+  /* ── Intro: reveal the site after the avocado time-lapse video ── */
   var intro = document.getElementById("intro");
+  var introVideo = intro ? intro.querySelector("video") : null;
 
   function hideIntro() {
     if (!intro) return;
     intro.classList.add("hidden");
     document.body.style.overflow = "";
+    if (introVideo) {
+      introVideo.pause();
+      introVideo.removeAttribute("autoplay");
+    }
     window.removeEventListener("keydown", skipIntro);
   }
 
@@ -32,10 +37,10 @@
     hideIntro();
   }
 
-  // Auto-dismiss after the animation completes (stems ~3.4s, title ~2.5s)
+  // Auto-dismiss after the video plays through (~10s)
   window.setTimeout(function () {
     if (intro) hideIntro();
-  }, 4200);
+  }, 10500);
 
   /* ── Scroll reveal ── */
   var revealEls = Array.prototype.slice.call(document.querySelectorAll(".reveal"));
