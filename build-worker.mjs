@@ -4,6 +4,10 @@
  * Cloudflare Worker (paste the resulting worker.js into the dashboard).
  *
  * Usage:  node build-worker.mjs
+ *
+ * This script replaces EVERYTHING from the `const ASSETS_JSON = ` marker
+ * to the end of file, so re-running it always produces a fresh bundle
+ * (idempotent) — even if worker.js already contains a previous bundle.
  */
 
 import { readFileSync, writeFileSync } from "node:fs";
@@ -19,11 +23,18 @@ const files = {
 
 const workerSrc = readFileSync(path.join(dir, "worker.js"), "utf8");
 
+const marker = "const ASSETS_JSON = ";
+const markerIdx = workerSrc.indexOf(marker);
+if (markerIdx === -1) {
+  console.error("build-worker.mjs: marker 'const ASSETS_JSON = ' not found in worker.js — aborting.");
+  process.exit(1);
+}
+
+// Keep everything before the marker (worker logic + comments), drop any
+// previous bundle, and append the freshly inlined assets.
+const head = workerSrc.slice(0, markerIdx);
 const json = JSON.stringify(files, null, 2);
-const patched = workerSrc.replace(
-  /const ASSETS_JSON = \{\};/,
-  "const ASSETS_JSON = " + json + ";"
-);
+const patched = head + marker + json + ";\n";
 
 writeFileSync(path.join(dir, "worker.js"), patched);
 console.log("worker.js bundled:", Object.keys(files).map((k) => `${k} (${files[k].length}B)`).join(", "));
