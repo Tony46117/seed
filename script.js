@@ -19,6 +19,11 @@
     }
   }
 
+  // Reduced-motion users skip the animation immediately
+  if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    hideIntro();
+  }
+
   // Auto-dismiss after the animation completes (stems ~3.4s, title ~2.5s)
   window.setTimeout(function () {
     if (intro) hideIntro();
