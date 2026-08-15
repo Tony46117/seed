@@ -19,7 +19,15 @@
     }
   }
 
-  // Reduced-motion users skip the animation immediately
+  // Allow clicking anywhere to skip
+  if (intro) {
+    intro.addEventListener("click", hideIntro);
+    document.body.style.overflow = "hidden"; // lock scroll during intro
+    window.addEventListener("keydown", skipIntro);
+  }
+
+  // Reduced-motion users skip the animation immediately (must run AFTER the
+  // scroll lock above so hideIntro restores scrolling right away)
   if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     hideIntro();
   }
@@ -28,13 +36,6 @@
   window.setTimeout(function () {
     if (intro) hideIntro();
   }, 4200);
-
-  // Allow clicking anywhere to skip
-  if (intro) {
-    intro.addEventListener("click", hideIntro);
-    document.body.style.overflow = "hidden"; // lock scroll during intro
-    window.addEventListener("keydown", skipIntro);
-  }
 
   /* ── Scroll reveal ── */
   var revealEls = Array.prototype.slice.call(document.querySelectorAll(".reveal"));
