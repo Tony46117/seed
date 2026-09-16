@@ -1,8 +1,8 @@
-/* Seedling Kenya — site interactions */
+ 
 (function () {
   "use strict";
 
-  /* ── Intro: reveal the site after the avocado time-lapse video ── */
+   
   var intro = document.getElementById("intro");
   var introVideo = intro ? intro.querySelector("video") : null;
 
@@ -24,25 +24,25 @@
     }
   }
 
-  // Allow clicking anywhere to skip
+  
   if (intro) {
     intro.addEventListener("click", hideIntro);
-    document.body.style.overflow = "hidden"; // lock scroll during intro
+    document.body.style.overflow = "hidden"; 
     window.addEventListener("keydown", skipIntro);
   }
 
-  // Reduced-motion users skip the animation immediately (must run AFTER the
-  // scroll lock above so hideIntro restores scrolling right away)
+  
+  
   if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     hideIntro();
   }
 
-  // Auto-dismiss after the video plays through (~10s)
+  
   window.setTimeout(function () {
     if (intro) hideIntro();
   }, 10500);
 
-  /* ── Scroll reveal ── */
+   
   var revealEls = Array.prototype.slice.call(document.querySelectorAll(".reveal"));
 
   function showReveals() {
@@ -69,7 +69,7 @@
     showReveals();
   }
 
-  // If intro was skipped instantly, reveal everything
+  
   window.setTimeout(function () {
     revealEls.forEach(function (el) {
       var r = el.getBoundingClientRect();
@@ -77,7 +77,7 @@
     });
   }, 500);
 
-  /* ── Animated counters ── */
+   
   var counters = Array.prototype.slice.call(document.querySelectorAll(".stat-num"));
 
   function animateCounter(el) {
@@ -88,7 +88,7 @@
     function step(ts) {
       if (!start) start = ts;
       var p = Math.min((ts - start) / dur, 1);
-      // ease-out
+      
       var eased = 1 - Math.pow(1 - p, 3);
       el.textContent = Math.round(eased * target);
       if (p < 1) requestAnimationFrame(step);
@@ -115,7 +115,7 @@
     counters.forEach(animateCounter);
   }
 
-  /* ── Header scroll state ── */
+   
   var header = document.getElementById("siteHeader");
   function onScroll() {
     if (window.scrollY > 10) header.classList.add("scrolled");
@@ -125,7 +125,7 @@
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
 
-  /* ── Active nav link on scroll ── */
+   
   var sections = Array.prototype.slice
     .call(document.querySelectorAll("main section[id], main section"))
     .filter(function (s) { return s.id; });
@@ -143,7 +143,7 @@
     });
   }
 
-  /* ── Mobile nav toggle ── */
+   
   var toggle = document.getElementById("navToggle");
   var nav = document.getElementById("siteNav");
 
@@ -159,11 +159,11 @@
       toggle.classList.toggle("open", open);
       toggle.setAttribute("aria-expanded", String(open));
     });
-    // Close on link click
+    
     navLinks.forEach(function (l) {
       l.addEventListener("click", closeNav);
     });
-    // Close on outside click
+    
     document.addEventListener("click", function (e) {
       if (nav.classList.contains("open") && !nav.contains(e.target) && e.target !== toggle) {
         closeNav();
@@ -171,7 +171,7 @@
     });
   }
 
-  /* ── Footer year ── */
+   
   var yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 })();
